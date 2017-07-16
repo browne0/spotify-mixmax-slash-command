@@ -45,8 +45,6 @@ function handleSearchString(term, req, res) {
 				res.status(500).send('Error');
 				return;
 			}
-
-			console.log(response.body);
 			let results;
 			let data = response.body;
 			const dateOptions = {
