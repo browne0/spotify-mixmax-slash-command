@@ -1,3 +1,2 @@
-// This is the Demo API key from https://github.com/giphy/GiphyAPI and not meant to be used
-// for production traffic.
-module.exports = 'dc6zaTOxFJmzC';
+// Mixmax API Token
+module.exports = 'c59f60c2-1a5e-4070-a41a-4be1b2471253';

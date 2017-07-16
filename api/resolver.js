@@ -1,72 +1,104 @@
 var key = require('../utils/key');
 var request = require('request');
 var _ = require('underscore');
+var createTemplate = require('../utils/template.js').resolver
 
+// get client keys
+const keys = require('./clientKeys');
 
 // The API that returns the in-email representation.
 module.exports = function(req, res) {
-  var term = req.query.text.trim();
+	var input = req.query.text.trim();
 
-  if (/^http:\/\/giphy\.com\/\S+/.test(term)) {
-    // Special-case: handle strings in the special URL form that are suggested by the /typeahead
-    // API. This is how the command hint menu suggests an exact Giphy image.
-    handleIdString(term.replace(/^http:\/\/giphy\.com\//, ''), req, res);
-  } else {
-    // Else, if the user was typing fast and press enter before the /typeahead API can respond,
-    // Mixmax will just send the text to the /resolver API (for performance). Handle that here.
-    handleSearchString(term, req, res);
-  }
+	handleSearchString(input, req, res);
 };
 
-function handleIdString(id, req, res) {
-  request({
-    url: 'http://api.giphy.com/v1/gifs/' + encodeURIComponent(id),
-    qs: {
-      api_key: key
-    },
-    gzip: true,
-    json: true,
-    timeout: 15 * 1000
-  }, function(err, response) {
-    if (err) {
-      res.status(500).send('Error');
-      return;
-    }
+function handleSearchString(term, req, res) {
+	// Spotify requires that we get an access token before a request. Since we're providing a clientID and secret, we don't need an OAuth Token.
+	request({
+		url: 'https://accounts.spotify.com/api/token',
+		method: 'POST',
+		headers: {
+			Authorization: 'Basic ' + base64(`${keys.clientID}:${keys.clientSecret}`)
+		},
+		form: {
+			grant_type: 'client_credentials'
+		},
+		json: true
+	}, (err, authResponse) => {
+		if (err || authResponse.statusCode !== 200 || !authResponse.body) {
+			res.status(500).send('Error');
+			return;
+		}
 
-    var image = response.body.data.images.original;
-    var width = image.width > 600 ? 600 : image.width;
-    var html = '<img style="max-width:100%;" src="' + image.url + '" width="' + width + '"/>';
-    res.json({
-      body: html
-        // Add raw:true if you're returning content that you want the user to be able to edit
-    });
-  });
+		let access_token = authResponse.body.access_token;
+
+		// add wildcards to actual search so the outputted array better matches what a user searches
+		request({
+			url: term,
+			headers: {
+				Authorization: `Bearer ${access_token}`
+			},
+			json: true
+		}, (err, response) => {
+			if (err || response.statusCode !== 200 || !response.body) {
+				res.status(500).send('Error');
+				return;
+			}
+
+			console.log(response.body);
+			let results;
+			let data = response.body;
+			const dateOptions = {
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric'
+			}
+
+			// data for album
+			if (response.body.album_type) {
+				results = {
+					type: 'album',
+					album_url: data.external_urls.spotify,
+					artist_url: data.artists[0].external_urls.spotify,
+					image_url: data.images[2].url,
+					name: data.name,
+					artist: data.artists[0].name
+				}
+			}
+
+			// data for track
+			else if (response.body.album) {
+				results = {
+					type: 'track',
+					album_url: data.album.external_urls.spotify,
+					image_url: data.album.images[2].url,
+					name: data.name,
+					song_url: data.external_urls.spotify,
+					artist_url: data.artists[0].external_urls.spotify,
+					artist: data.artists[0].name
+				}
+			}
+
+			// data for artist
+			else {
+				results = {
+					type: 'artist',
+					artist_url: data.external_urls.spotify,
+					image_url: data.images[2].url,
+					name: data.name,
+					followers: data.followers.total.toLocaleString()
+				}
+			}
+
+			res.json({
+				body: createTemplate(results)
+			})
+		});
+	});
 }
 
-function handleSearchString(term, req, res) {
-  request({
-    url: 'http://api.giphy.com/v1/gifs/random',
-    qs: {
-      tag: term,
-      api_key: key
-    },
-    gzip: true,
-    json: true,
-    timeout: 15 * 1000
-  }, function(err, response) {
-    if (err) {
-      res.status(500).send('Error');
-      return;
-    }
-
-    var data = response.body.data;
-
-    // Cap at 600px wide
-    var width = data.image_width > 600 ? 600 : data.image_width;
-    var html = '<img style="max-width:100%;" src="' + data.image_url + '" width="' + width + '"/>';
-    res.json({
-      body: html
-        // Add raw:true if you're returning content that you want the user to be able to edit
-    });
-  });
+// simple function using the buffer module to return base64 for the authorization header.
+function base64(str) {
+	return new Buffer(str).toString('base64');
 }

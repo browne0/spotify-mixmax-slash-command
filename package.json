@@ -18,6 +18,7 @@
   "homepage": "https://github.com/mixmaxhq/giphy-example-slash-command",
   "dependencies": {
     "body-parser": "^1.12.2",
+    "buffer": "^5.0.6",
     "cors": "^2.7.1",
     "express": "^4.12.3",
     "pem": "^1.8.3",
