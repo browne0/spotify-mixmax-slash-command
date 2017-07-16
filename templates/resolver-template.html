@@ -1,141 +1,169 @@
-<div style="
-  display: flex;
-  flex-flow: row nowrap;
+<table style="
   background: #181818;
   border-radius: 3px;
-  padding: 0.45rem;
   position: relative;
   width: 580px;
+  table-layout: auto;
+  padding: 0.095rem;
+  padding-bottom: 0px;
 ">
-  <a style="display: inline-block; height: 104px;" href="<%
-  	switch(data.type) {
-		case 'album':
-		case 'track':
-			return data.album_url;
-		case 'artist':
-			return data.artist_url;
-		default:
-			return '';
-  	}
-  %>" target="_blank">
-    <img style="
-      height: 104px;
-      border-radius: 2px;"
-      src="<% return data.image_url %>">
-  </a>
-  <div style="
-	display: flex;
-	flex-direction: column;
-	align-content: left;
-	justify-content: space-between;
-  ">
-  	  <p style="
-	  	  font-family: Proxima Nova, Helvetica Neue, sans-serif;
-	  	  font-size: 1.1rem; margin: 0px;
-	  	  padding-left: 1rem;
-	  	  padding-top: .5rem;
-	  	  flex: 1;
-	  	  color: #fff;
-	  	  text-overflow: ellipsis;
-  	  ">  <%
-		switch(data.type) {
-			case 'album':
-			case 'track':
-				return 'Listen to <i style="color: rgba(29,185,84, .65); font-weight: bold; font-size: 1.22rem;">' + data.name + '</i> on Spotify!';
-			case 'artist':
-				return 'Check out <i style="color: rgba(29,185,84, .65); font-weight: bold; font-size: 1.22rem;">' + data.name + "'s</i> music on Spotify!"
-			default:
-				return '';
-		} %></p>
-  	  <div style="
-  	      font-family: Proxima Nova, Helvetica Neue, sans-serif;
-  	      padding-left: 1rem;
-  	      overflow: hidden;
-  	      padding-bottom: .250rem;
-  	  ">
-  	    <div style="
-  	      font-weight: 500;
-  	      white-space: nowrap;
-  	      overflow: hidden;
-  	      text-overflow: ellipsis;
-  	      width: 445px;
-  	      padding-bottom: .125rem;
-  	    ">
-  	      <a href="<%
-  			switch(data.type) {
-  				case 'album':
-  					return data.album_url;
-  				case 'track':
-  					return data.song_url;
-  				default:
-  					return '';
-  			}
-  	    %>" target="_blank" style="
-  	        text-decoration: none;
-  	        color: #fff;
-  	      ">
-  	        <% return data.name %>
-  	      </a>
-  	    </div>
-  	    <div style="
-  	      font-size: 0.85rem;
-  	      white-space: nowrap;
-  	      overflow: hidden;
-  	      text-overflow: ellipsis;
-  	      width: 445px;
-  	      padding-bottom: .125rem;
-  	    ">
-  	      <a href="<%
-  			switch(data.type) {
-  				case 'album':
-  				case 'track':
-  					return data.artist_url;
-  				default:
-  					return '';
-  			}
-  	    %>" target="_blank" style="
-  	        text-decoration: none;
-  	        color: rgba(160,160,160, .75);
-  	      ">
-  	        <%
-  	        	switch(data.type) {
-  	        		case 'album':
-  	        		case 'track':
-  	        			return data.artist;
-  	        		default:
-  	        			return '';
-  	        	}
-  	        %>
-  	      </a>
-  	    </div>
-  	    <div>
-  	      <div style="
-  	        font-size: 0.9rem;
-  	        color: rgba(160,160,160, .75);
-  	        white-space: nowrap;
-  	        overflow: hidden;
-  	        text-overflow: ellipsis;
-  	        width: 445px;
-  	      ">
-  	        <%
-  	        	switch(data.type) {
-  	        		case 'artist':
-  	        			return data.followers + ' followers';
-  	        		default:
-  	        			return '';
-  	        	}
-  	        %>
-  	      </div>
-  	    </div>
-  	  </div>
-  </div>
-	<div style="
-		position: absolute;
-		bottom: .15rem;
-		right: .15rem;
-	">
-		<a href="https://spotify.com" target="_blank">
-			<img src="https://spotifypresscom.files.wordpress.com/2015/01/spotify_logo_rgb_green.png?w=300" style="height:22.5px" alt="">
-		</a>
-	</div>
-</div>
+  <tr>
+    <td>
+      <a style="display: inline-block; height: 104px;" href="<%
+        switch(data.type) {
+        case 'album':
+        case 'track':
+          return data.album_url;
+        case 'artist':
+          return data.artist_url;
+        default:
+          return '';
+        }
+      %>" target="_blank">
+        <img style="
+          height: 104px;
+          border-radius: 2px;
+          margin-left: 3px;
+          margin-top: 2px;"
+
+          src="<% return data.image_url %>">
+      </a>
+    </td>
+    <td style="padding: 0px; vertical-align: top;">
+      <table style="table-layout: fixed; width: calc(100% - 3px);">
+      <tr>
+        <td style="width: 100%;">
+          <a style="
+            display: block;
+            font-family: Proxima Nova, Helvetica Neue, sans-serif;
+            font-size: 1.1rem; margin: 0px;
+            padding-left: .5rem;
+            padding-top: .25rem;
+            color: #fff;
+            text-overflow: ellipsis;
+            text-decoration: none;
+          " href="
+          <%
+            switch(data.type) {
+              case 'album':
+                return data.album_url;
+              case 'track':
+                return data.song_url;
+              case 'artist':
+                return data.artist_url;
+              default:
+                return '';
+            }
+          %>">
+            <%
+              switch(data.type) {
+                case 'album':
+                case 'track':
+                  return 'Listen to <i style="color: rgba(29,185,84, .65); font-weight: bold; font-size: 1.22rem;">' + data.name + '</i> on Spotify!';
+                case 'artist':
+                  return 'Check out <i style="color: rgba(29,185,84, .65); font-weight: bold; font-size: 1.22rem;">' + data.name + "'s</i> music on Spotify!"
+                default:
+                  return '';
+              }
+            %>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td style="height: 76px; vertical-align: bottom;">
+          <div style="
+              font-family: Proxima Nova, Helvetica Neue, sans-serif;
+              padding-left: .5rem;
+              overflow: hidden;
+              padding-bottom: .450rem;
+          ">
+            <div style="width: 81%; display: inline-block;">
+              <div style="
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 445px;
+                padding-bottom: .125rem;
+              ">
+                <a href="<%
+              switch(data.type) {
+                case 'album':
+                  return data.album_url;
+                case 'track':
+                  return data.song_url;
+                case 'artist':
+                  return data.artist_url;
+                default:
+                  return '';
+              }
+              %>" target="_blank" style="
+                  text-decoration: none;
+                  color: #fff;
+                ">
+                  <% return data.name %>
+                </a>
+              </div>
+              <div style="
+                font-size: 0.85rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 445px;
+                padding-bottom: .125rem;
+              ">
+                <a href="<%
+              switch(data.type) {
+                case 'album':
+                case 'track':
+                  return data.artist_url;
+                default:
+                  return '';
+              }
+              %>" target="_blank" style="
+                  text-decoration: none;
+                  color: rgba(160,160,160, .75);
+                ">
+                  <%
+                    switch(data.type) {
+                      case 'album':
+                      case 'track':
+                        return data.artist;
+                      default:
+                        return '';
+                    }
+                  %>
+                </a>
+              </div>
+              <div>
+                <div style="
+                  font-size: 0.9rem;
+                  color: rgba(160,160,160, .75);
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  width: 445px;
+                ">
+                  <%
+                    switch(data.type) {
+                      case 'artist':
+                        return data.followers + ' followers';
+                      default:
+                        return '';
+                    }
+                  %>
+                </div>
+              </div>
+            </div>
+            <div style="display: inline-block;">
+              <a href="https://spotify.com" target="_blank">
+                <img src="https://spotifypresscom.files.wordpress.com/2015/01/spotify_logo_rgb_green.png?w=300" style="height:22.5px" alt="">
+              </a>
+            </div>
+          </div>
+        </td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+</table>
