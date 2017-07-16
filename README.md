@@ -1,6 +1,7 @@
 # Spotify Slash Command for Mixmax
 
 This is an open source Mixmax Slash Command.
+
 Author: Malik Browne
 
 This slash command takes a user's input and queries Spotify's API for a track, artist, or album, depending on the user's choice.
